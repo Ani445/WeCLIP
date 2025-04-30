@@ -159,12 +159,12 @@ def perform_single_voc_cam(img_path, image, image_features, attn_weight_list, se
                 attn_diff = torch.sum(attn_diff.flatten(1), dim=1)
                 diff_th = torch.mean(attn_diff)
 
-                attn_mask = torch.ones_like(attn_diff)
+                attn_mask = torch.zeros_like(attn_diff)
                 attn_mask[attn_diff <= diff_th] = 1
 
                 attn_mask = attn_mask.reshape(-1, 1, 1)
                 attn_mask = attn_mask.expand_as(attn_weight)
-                # attn_weight = torch.sum(attn_mask*attn_weight, dim=0) / (torch.sum(attn_mask, dim=0)+1e-5)
+                attn_weight = torch.sum(attn_mask*attn_weight, dim=0) / (torch.sum(attn_mask, dim=0)+1e-5)
 
                 attn_weight = attn_weight.detach()
                 attn_weight = attn_weight * seg_attn.squeeze(0).detach()
