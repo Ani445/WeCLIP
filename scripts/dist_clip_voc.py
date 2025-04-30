@@ -234,6 +234,41 @@ def train(cfg):
 
     avg_meter = AverageMeter()
 
+    max_iters = cfg.train.max_iters
+    chunk_size = cfg.train.log_iters
+
+    for chunk_start in range(start_iter, max_iters, chunk_size):
+        
+        chunk_end = min(chunk_start + chunk_size, max_iters)
+        
+        with tqdm(range(chunk_start, chunk_end), 
+                        desc=f"Training Iter {chunk_start+1} to {chunk_end}") as pbar:
+            for n_iter in pbar:
+            
+                # Get the next batch; if the iterator is exhausted, reinitialize it.
+                try:
+                    img_name, inputs, cls_labels, img_box = next(train_loader_iter)
+                except StopIteration:
+                    train_loader_iter = iter(train_loader)
+                    img_name, inputs, cls_labels, img_box = next(train_loader_iter)
+                
+                # Forward pass through the model.
+                segs, cam, attn_pred = WeCLIP_model(inputs.to(DEVICE), img_name)
+                pseudo_label = cam
+                segs = F.interpolate(segs, size=pseudo_label.shape[1:], mode='bilinear', align_corners=False)
+                fts_cam = cam.clone()
+                
+                # Compute the affinity label and losses.
+                aff_label = cams_to_affinity_label(fts_cam, mask=attn_mask, ignore_index=cfg.dataset.ignore_index)
+                attn_loss, pos_count, neg_count = get_aff_loss(attn_pred, aff_label)
+                seg_loss = get_seg_loss(segs, pseudo_label.type(torch.long), ignore_index=cfg.dataset.ignore_index)
+                loss = 1 * seg_loss + 0.1 * attn_loss
+
+                pbar.set_postfix(seg_loss=seg_loss.item(), attn_loss=attn_loss.item(), loss=loss.item())
+                
+                # Update average meter.
+                avg_meter.add({'seg_loss': seg_loss.item(), 'attn_loss': attn_loss.item()})
+
 
     for n_iter in range(cfg.train.max_iters):
         
