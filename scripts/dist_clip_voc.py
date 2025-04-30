@@ -237,6 +237,9 @@ def train(cfg):
     max_iters = cfg.train.max_iters
     chunk_size = cfg.train.log_iters
 
+    start_iter = 0
+    checkpoint_path = os.path.join(cfg.checkpoint.dir, cfg.checkpoint.base_name + '.pth')
+
     for chunk_start in range(start_iter, max_iters, chunk_size):
         
         chunk_end = min(chunk_start + chunk_size, max_iters)
