@@ -238,7 +238,7 @@ def train(cfg):
     chunk_size = cfg.train.log_iters
 
     start_iter = 0
-    checkpoint_path = os.path.join(cfg.checkpoint.dir, cfg.checkpoint.base_name + '.pth')
+    # checkpoint_path = os.path.join(cfg.checkpoint.dir, cfg.checkpoint.base_name + '.pth')
 
     for chunk_start in range(start_iter, max_iters, chunk_size):
         
