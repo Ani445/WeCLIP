@@ -254,7 +254,7 @@ def train(cfg):
                     img_name, inputs, cls_labels, img_box = next(train_loader_iter)
                 
                 # Forward pass through the model.
-                segs, cam, attn_pred = WeCLIP_model(inputs.to(DEVICE), img_name)
+                segs, cam, attn_pred = WeCLIP_model(inputs.to('cuda'), img_name)
                 pseudo_label = cam
                 segs = F.interpolate(segs, size=pseudo_label.shape[1:], mode='bilinear', align_corners=False)
                 fts_cam = cam.clone()
