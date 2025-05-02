@@ -164,7 +164,8 @@ def perform_single_voc_cam(img_path, image, image_features, attn_weight_list, se
 
                 attn_mask = attn_mask.reshape(-1, 1, 1)
                 attn_mask = attn_mask.expand_as(attn_weight)
-                attn_weight = torch.sum(attn_mask*attn_weight, dim=0) / (torch.sum(attn_mask, dim=0)+1e-5)
+                attn_weight = attn_mask
+                # attn_weight = torch.sum(attn_mask*attn_weight, dim=0) / (torch.sum(attn_mask, dim=0)+1e-5)
 
                 attn_weight = attn_weight.detach()
                 attn_weight = attn_weight * seg_attn.squeeze(0).detach()
