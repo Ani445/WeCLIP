@@ -74,8 +74,10 @@ def validate(model=None, data_loader=None, cfg=None):
     num = 1
     seg_hist = np.zeros((21, 21))
     cam_hist = np.zeros((21, 21))
-    for _, data in tqdm(enumerate(data_loader),
-                        total=len(data_loader), ncols=100, ascii=" >="):
+    # for _, data in tqdm(enumerate(data_loader),
+    #                     total=len(data_loader), ncols=100, ascii=" >="):
+
+    for data in data_loader:
         name, inputs, labels, cls_label = data
 
         inputs = inputs.cuda()
