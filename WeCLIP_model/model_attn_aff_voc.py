@@ -172,7 +172,9 @@ class WeCLIP(nn.Module):
             
             cam_list.append(cam_labels)
 
-            save_refined_cams(cam_labels.detach().cpu().numpy(), img_path, keys)
+            if mode=='val':
+
+                save_refined_cams(cam_labels.detach().cpu().numpy(), img_path, keys)
 
         all_cam_labels = torch.stack(cam_list, dim=0)
 

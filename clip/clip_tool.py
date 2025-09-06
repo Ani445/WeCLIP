@@ -151,7 +151,8 @@ def perform_single_voc_cam(img_path, image, image_features, attn_weight_list, se
         grayscale_cam_highres = cv2.resize(grayscale_cam, (w, h))
         highres_cam_to_save.append(torch.tensor(grayscale_cam_highres))
 
-        save_some_cams(grayscale_cam, img_path, label_index)
+        if mode == 'val':
+            save_some_cams(grayscale_cam, img_path, label_index)
 
         if idx == 0:
             if require_seg_trans == True:
