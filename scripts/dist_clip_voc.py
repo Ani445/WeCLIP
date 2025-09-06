@@ -238,6 +238,22 @@ def train(cfg):
     chunk_size = cfg.train.log_iters
     start_iter = 0
 
+    checkpoint_path = '/content/WeCLIP_OG_model_iter_30000.pth'
+
+    if os.path.exists(checkpoint_path):
+        checkpoint = torch.load(checkpoint_path)
+
+        # filtered_state_dict = {k: v for k, v in checkpoint['model_state_dict'].items() if k in WeCLIP_model.state_dict()}
+
+        WeCLIP_model.load_state_dict(checkpoint["model_state_dict"], strict=False)
+
+        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        start_iter = checkpoint["iter"]
+        logging.info(
+            f"Loaded checkpoint from {checkpoint_path}, starting from iteration {start_iter}"
+        )
+
+
     for chunk_start in range(start_iter, max_iters, chunk_size):
         
         chunk_end = min(chunk_start + chunk_size, max_iters)
