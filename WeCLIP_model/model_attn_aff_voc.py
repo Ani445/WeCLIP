@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from saving_functions import save_refined_cams
 from .segformer_head import SegFormerHead
 import numpy as np
 import clip
@@ -169,6 +171,8 @@ class WeCLIP(nn.Module):
                 cam_labels = _refine_cams(self.par, img[i], cams, valid_key)
             
             cam_list.append(cam_labels)
+
+            save_refined_cams(cam_labels.detach().cpu().numpy(), img_path, keys)
 
         all_cam_labels = torch.stack(cam_list, dim=0)
 

@@ -6,6 +6,8 @@ from clip.clip_text import class_names, new_class_names, class_names_coco, new_c
 from tqdm import tqdm
 from PIL import Image
 from torchvision.transforms import Compose, Resize, ToTensor, Normalize
+
+from saving_functions import save_some_cams
 try:
     from torchvision.transforms import InterpolationMode
     BICUBIC = InterpolationMode.BICUBIC
@@ -148,6 +150,8 @@ def perform_single_voc_cam(img_path, image, image_features, attn_weight_list, se
 
         grayscale_cam_highres = cv2.resize(grayscale_cam, (w, h))
         highres_cam_to_save.append(torch.tensor(grayscale_cam_highres))
+
+        save_some_cams(grayscale_cam, img_path, label_index)
 
         if idx == 0:
             if require_seg_trans == True:
