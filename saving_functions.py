@@ -86,7 +86,7 @@ def save_refined_cams(cam, annotation_path, cam_idx, threshold = 0.5):
     color_image = np.zeros((pseudolabel.shape[0], pseudolabel.shape[1], 3), dtype=np.uint8)
     for class_id in np.unique(pseudolabel):
         color_image[pseudolabel == class_id] = VOC_COLORMAP[class_id]
-        color_image = cv2.cvtColor(color_image, cv2.COLOR_RGB2BGR)
+    color_image = cv2.cvtColor(color_image, cv2.COLOR_RGB2BGR)
     os.makedirs("./all_cams/new", exist_ok=True)
     success = cv2.imwrite(f"./all_cams/new/{image_name}_{cam_idx}.png", color_image)
     # if success:
